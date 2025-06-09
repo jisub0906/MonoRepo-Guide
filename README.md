@@ -101,9 +101,17 @@ chmod +x apps/backend-spring/gradlew
 ### 4️⃣ 개발 환경 시작
 
 ```bash
-# 모든 서비스를 한 번에 시작
-./scripts/dev.sh
+# 🎯 포트 충돌 해결 (선택사항)
+pnpm kill-ports              # 기본 포트들 (5432, 8080, 8000, 4200) 자동 종료
+# 또는 특정 포트만: ./scripts/kill-ports.sh 3000 5432
+
+# 🚀 개발 환경 시작
+pnpm dev                     # 대화형 모드 (포트 충돌 시 사용자 확인)
+# 또는
+pnpm dev:auto                # 자동 종료 모드 (포트 충돌 시 자동 해결)
 ```
+
+> 💡 **포트 충돌 해결**: 기존에 실행 중인 서비스가 있어 포트 충돌이 발생하면, `pnpm kill-ports` 명령어로 자동으로 해결할 수 있습니다.
 
 ### 5️⃣ 브라우저에서 확인
 
@@ -371,15 +379,22 @@ MonoRepo-Guide/
 #### 방법 1: 통합 개발 환경 (권장)
 
 ```bash
-# 모든 서비스를 한 번에 시작
-./scripts/dev.sh
+# 🎯 포트 충돌 자동 해결 + 개발 환경 시작
+pnpm dev:auto              # 자동 모드 (포트 충돌 시 자동 종료)
+
+# 🤔 포트 충돌 시 사용자 확인 + 개발 환경 시작  
+pnpm dev                   # 대화형 모드 (포트 충돌 시 사용자 확인)
+
+# 🔧 포트만 정리하고 싶은 경우
+pnpm kill-ports            # 기본 포트들 (5432, 8080, 8000, 4200) 자동 종료
 ```
 
-이 명령어는 다음을 순차적으로 실행합니다:
-1. PostgreSQL 데이터베이스 시작
-2. Spring Boot 백엔드 시작 (포트 8080)
-3. FastAPI 백엔드 시작 (포트 8000)
-4. Next.js 프론트엔드 시작 (포트 3000)
+이 명령어들은 다음을 순차적으로 실행합니다:
+1. **포트 충돌 검사 및 해결** (필요시)
+2. PostgreSQL 데이터베이스 시작
+3. Spring Boot 백엔드 시작 (포트 8080)
+4. FastAPI 백엔드 시작 (포트 8000)
+5. Next.js 프론트엔드 시작 (포트 4200)
 
 #### 방법 2: 개별 서비스 시작
 
@@ -446,6 +461,19 @@ pnpm test:all
 
 ### 🔧 유용한 명령어
 
+#### 🎯 포트 관리
+```bash
+# 기본 포트들 자동 종료 (5432, 8080, 8000, 4200)
+pnpm kill-ports
+
+# 특정 포트들만 종료
+./scripts/kill-ports.sh 3000 5432 8080
+
+# 자동 종료 모드로 개발 환경 시작
+pnpm dev:auto
+```
+
+#### 🛠️ 개발 환경 관리
 ```bash
 # 환경 검증
 ./scripts/verify.sh
@@ -589,6 +617,19 @@ docker-compose exec postgres-db psql -U postgres -d authdb
 
 #### 1. 포트 충돌 오류
 
+**🎯 자동 해결 (권장)**
+```bash
+# 모든 기본 포트 자동 종료
+pnpm kill-ports
+
+# 특정 포트만 종료
+./scripts/kill-ports.sh 3000 5432 8080
+
+# 자동 종료 모드로 개발 환경 시작
+pnpm dev:auto
+```
+
+**🔍 수동 해결**
 ```bash
 # 포트 사용 중인 프로세스 확인
 # macOS/Linux
@@ -604,6 +645,8 @@ netstat -ano | findstr :3000
 kill -9 <PID>  # macOS/Linux
 taskkill /PID <PID> /F  # Windows
 ```
+
+> 💡 **팁**: `pnpm kill-ports` 명령어는 개발에 필요한 모든 포트(5432, 8080, 8000, 4200)를 자동으로 확인하고 안전하게 종료합니다.
 
 #### 2. Docker 관련 문제
 

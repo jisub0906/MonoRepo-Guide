@@ -1,8 +1,18 @@
 #!/bin/bash
 
 # 개발 환경 실행 스크립트
+# 사용법: 
+#   ./scripts/dev.sh           # 대화형 모드 (기본)
+#   ./scripts/dev.sh --auto    # 자동 종료 모드
 
 set -e  # 오류 발생 시 스크립트 중단
+
+# 명령행 인수 처리
+AUTO_KILL=false
+if [[ "$1" == "--auto" ]]; then
+    AUTO_KILL=true
+    echo "🤖 자동 종료 모드가 활성화되었습니다."
+fi
 
 echo "🚀 모노레포 개발 환경을 시작합니다..."
 
@@ -14,6 +24,50 @@ check_command() {
     fi
 }
 
+# 포트 충돌 해결 함수
+resolve_port_conflict() {
+    local port=$1
+    local service_name=$2
+    
+    echo "🔍 포트 $port 사용 중인 프로세스를 확인합니다..."
+    
+    # 포트를 사용하는 프로세스 ID 찾기
+    local pids=$(sudo lsof -ti :$port 2>/dev/null || true)
+    
+    if [ ! -z "$pids" ]; then
+        echo "⚠️  포트 $port가 이미 사용 중입니다."
+        echo "📋 사용 중인 프로세스:"
+        sudo lsof -i :$port
+        
+        if [ "$AUTO_KILL" = true ]; then
+            echo "🤖 자동 모드: $service_name 프로세스를 자동으로 종료합니다..."
+            REPLY="y"
+        else
+            read -p "🤔 기존 $service_name 프로세스를 종료하고 계속하시겠습니까? (y/N): " -n 1 -r
+            echo
+        fi
+        
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo "🛑 포트 $port를 사용하는 프로세스를 종료합니다..."
+            for pid in $pids; do
+                sudo kill -TERM $pid 2>/dev/null || true
+                sleep 2
+                # SIGTERM으로 종료되지 않으면 SIGKILL 사용
+                if kill -0 $pid 2>/dev/null; then
+                    sudo kill -KILL $pid 2>/dev/null || true
+                fi
+            done
+            echo "✅ 프로세스가 종료되었습니다."
+            sleep 3  # 포트가 완전히 해제될 때까지 대기
+        else
+            echo "❌ 사용자가 취소했습니다. 스크립트를 종료합니다."
+            exit 1
+        fi
+    else
+        echo "✅ 포트 $port는 사용 가능합니다."
+    fi
+}
+
 echo "🔍 필수 도구 확인 중..."
 check_command docker-compose
 check_command java
@@ -22,6 +76,12 @@ check_command pnpm
 
 # 현재 디렉토리 저장
 ROOT_DIR=$(pwd)
+
+# 포트 충돌 해결
+resolve_port_conflict 5432 "PostgreSQL"
+resolve_port_conflict 8080 "Spring Boot"
+resolve_port_conflict 8000 "FastAPI"
+resolve_port_conflict 4200 "Next.js"
 
 # Docker Compose로 데이터베이스 시작
 echo "📦 PostgreSQL 데이터베이스를 시작합니다..."

@@ -4,6 +4,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "./scripts/dev.sh",
+    "dev:auto": "./scripts/dev.sh --auto",
+    "kill-ports": "./scripts/kill-ports.sh",
     "build": "./scripts/build.sh",
     "verify": "./scripts/verify.sh",
     "start": "docker-compose up -d",
