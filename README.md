@@ -173,7 +173,7 @@ sudo apt install -y openjdk-21-jdk
 sudo apt install -y python3.12 python3.12-venv python3.12-pip
 
 # pnpm 설치
-npm install -g pnpm
+sudo npm install -g pnpm
 
 # Docker 설치
 sudo apt install -y apt-transport-https ca-certificates curl gnupg lsb-release
