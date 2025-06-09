@@ -202,7 +202,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 # 필수 도구 설치
-choco install nodejs-lts openjdk21 python312 docker-desktop -y
+choco install nodejs-lts openjdk --version=21.0.2 python312 docker-desktop -y
 
 # pnpm 설치
 npm install -g pnpm
