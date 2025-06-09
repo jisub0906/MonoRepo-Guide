@@ -240,13 +240,16 @@ wsl --install -d Ubuntu-22.04
 # [Java & Spring Boot]
 vscjava.vscode-java-pack
 vmware.vscode-spring-boot
+
 # [Python & FastAPI]
 ms-python.python
 ms-python.black-formatter
+
 # [Next.js & Frontend]
 dbaeumer.vscode-eslint
 esbenp.prettier-vscode
 (선택) bradlc.vscode-tailwindcss
+
 # [Nx, Docker, Common]
 nrwl.angular-console
 ms-azuretools.vscode-docker
