@@ -273,6 +273,8 @@ firsttris.Jest-Runner
 # 저장소 클론 후 실행
 cd MonoRepo-Guide
 chmod +x scripts/*.sh
+sudo apt-get install dos2unix   # (최초 1회만)
+dos2unix ./scripts/dev.sh
 ./scripts/verify.sh
 ```
 
