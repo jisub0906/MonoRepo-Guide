@@ -204,6 +204,9 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 # 필수 도구 설치
 choco install nodejs-lts -y; choco install openjdk --version=21.0.2 -y; choco install python --version=3.12 -y; choco install docker-desktop -y
 
+# 실행 정책 변경
+Set-ExecutionPolicy RemoteSigned
+
 # pnpm 설치
 npm install -g pnpm
 
@@ -230,6 +233,28 @@ wsl --install -d Ubuntu-22.04
 
 # WSL2에서 Linux 설치 가이드 따라하기
 ```
+
+#### VScode Extensions
+
+[Java & Spring Boot]
+
+vscjava.vscode-java-pack
+vmware.vscode-spring-boot
+[Python & FastAPI]
+
+ms-python.python
+ms-python.black-formatter
+[Next.js & Frontend]
+
+dbaeumer.vscode-eslint
+esbenp.prettier-vscode
+(선택) bradlc.vscode-tailwindcss
+[Nx, Docker, Common]
+
+nrwl.angular-console
+ms-azuretools.vscode-docker
+eamodio.gitlens
+VisualStudioExptTeam.vscodeintellicode
 
 ### ✅ 설치 검증
 
