@@ -236,21 +236,17 @@ wsl --install -d Ubuntu-22.04
 
 #### VScode Extensions
 
-[Java & Spring Boot]
-
+# [Java & Spring Boot]
 vscjava.vscode-java-pack
 vmware.vscode-spring-boot
-[Python & FastAPI]
-
+# [Python & FastAPI]
 ms-python.python
 ms-python.black-formatter
-[Next.js & Frontend]
-
+# [Next.js & Frontend]
 dbaeumer.vscode-eslint
 esbenp.prettier-vscode
 (선택) bradlc.vscode-tailwindcss
-[Nx, Docker, Common]
-
+# [Nx, Docker, Common]
 nrwl.angular-console
 ms-azuretools.vscode-docker
 eamodio.gitlens
