@@ -32,8 +32,14 @@ export default function Dashboard() {
   // 서비스 상태 확인
   useEffect(() => {
     const checkServices = async () => {
+      const serviceUrls = [
+        { name: 'Next.js 프론트엔드', url: '/', status: 'loading' as const },
+        { name: 'Spring Boot 백엔드', url: 'http://localhost:8080/api/auth/health', status: 'loading' as const },
+        { name: 'FastAPI 백엔드', url: 'http://localhost:8000/health', status: 'loading' as const },
+      ];
+
       const updatedServices = await Promise.all(
-        services.map(async (service) => {
+        serviceUrls.map(async (service) => {
           if (service.name === 'Next.js 프론트엔드') {
             return { ...service, status: 'healthy' as const, response: JSON.stringify({ message: '정상 작동 중' }) };
           }
@@ -55,7 +61,11 @@ export default function Dashboard() {
     };
 
     checkServices();
-  }, [services]);
+    
+    // 30초마다 상태 확인
+    const interval = setInterval(checkServices, 30000);
+    return () => clearInterval(interval);
+  }, []); // 빈 의존성 배열로 변경
 
   // 아이템 목록 조회
   useEffect(() => {
