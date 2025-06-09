@@ -3,7 +3,7 @@
 # 포트 킬러 유틸리티 스크립트
 # 사용법: 
 #   ./scripts/kill-ports.sh                    # 기본 포트들 (5432, 8080, 8000, 4200) 종료
-#   ./scripts/kill-ports.sh 3000 5432 8080    # 특정 포트들 종료
+#   ./scripts/kill-ports.sh 4200 5432 8080    # 특정 포트들 종료
 
 set -e
 

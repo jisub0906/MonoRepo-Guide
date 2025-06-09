@@ -123,7 +123,7 @@ pnpm test:fastapi
 pnpm dev
 
 # 다른 터미널에서
-curl http://localhost:3000/api/health
+curl http://localhost:4200/api/health
 curl http://localhost:8080/api/auth/health
 curl http://localhost:8000/health
 ```

@@ -29,7 +29,7 @@
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Frontend      │    │   Backend       │    │   Backend       │
 │   (Next.js)     │◄──►│   (Spring Boot) │◄──►│   (FastAPI)     │
-│   Port: 3000    │    │   Port: 8080    │    │   Port: 8000    │
+│   Port: 4200    │    │   Port: 8080    │    │   Port: 8000    │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
          │                       │                       │
          └───────────────────────┼───────────────────────┘
@@ -103,7 +103,7 @@ chmod +x apps/backend-spring/gradlew
 ```bash
 # 🎯 포트 충돌 해결 (선택사항)
 pnpm kill-ports              # 기본 포트들 (5432, 8080, 8000, 4200) 자동 종료
-# 또는 특정 포트만: ./scripts/kill-ports.sh 3000 5432
+# 또는 특정 포트만: ./scripts/kill-ports.sh 4200 5432
 
 # 🚀 개발 환경 시작
 pnpm dev                     # 대화형 모드 (포트 충돌 시 사용자 확인)
@@ -115,7 +115,7 @@ pnpm dev:auto                # 자동 종료 모드 (포트 충돌 시 자동 �
 
 ### 5️⃣ 브라우저에서 확인
 
-- 🌐 **Frontend Dashboard**: http://localhost:3000
+- 🌐 **Frontend Dashboard**: http://localhost:4200
 - 🌱 **Spring Boot API**: http://localhost:8080/api/auth/health
 - 🐍 **FastAPI Docs**: http://localhost:8000/docs
 - 📊 **FastAPI Health**: http://localhost:8000/health
@@ -419,7 +419,7 @@ pnpm kill-ports            # 기본 포트들 (5432, 8080, 8000, 4200) 자동 �
 pnpm db:up
 
 # 개별 서비스 시작
-pnpm serve:frontend    # Next.js (포트 3000)
+pnpm serve:frontend    # Next.js (포트 4200)
 pnpm serve:spring      # Spring Boot (포트 8080)
 pnpm serve:fastapi     # FastAPI (포트 8000)
 ```
@@ -483,7 +483,7 @@ pnpm test:all
 pnpm kill-ports
 
 # 특정 포트들만 종료
-./scripts/kill-ports.sh 3000 5432 8080
+./scripts/kill-ports.sh 4200 5432 8080
 
 # 자동 종료 모드로 개발 환경 시작
 pnpm dev:auto
@@ -639,7 +639,7 @@ docker-compose exec postgres-db psql -U postgres -d authdb
 pnpm kill-ports
 
 # 특정 포트만 종료
-./scripts/kill-ports.sh 3000 5432 8080
+./scripts/kill-ports.sh 4200 5432 8080
 
 # 자동 종료 모드로 개발 환경 시작
 pnpm dev:auto
@@ -649,13 +649,13 @@ pnpm dev:auto
 ```bash
 # 포트 사용 중인 프로세스 확인
 # macOS/Linux
-lsof -i :3000  # Next.js
+lsof -i :4200  # Next.js
 lsof -i :8080  # Spring Boot
 lsof -i :8000  # FastAPI
 lsof -i :5432  # PostgreSQL
 
 # Windows
-netstat -ano | findstr :3000
+netstat -ano | findstr :4200
 
 # 프로세스 종료
 kill -9 <PID>  # macOS/Linux

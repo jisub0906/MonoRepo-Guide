@@ -15,10 +15,8 @@ class Settings:
 
     # CORS 설정
     ALLOWED_ORIGINS: list = [
-        "http://localhost:3000",
         "http://localhost:4200",  # Next.js 개발 서버
         "http://localhost:8080",
-        "http://127.0.0.1:3000",
         "http://127.0.0.1:4200",  # Next.js 개발 서버
         "http://127.0.0.1:8080",
     ]

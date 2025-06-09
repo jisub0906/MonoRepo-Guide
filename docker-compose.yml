@@ -24,7 +24,7 @@ services:
       dockerfile: apps/frontend-nextjs/Dockerfile
     container_name: monorepo-frontend-nextjs
     ports:
-      - "3000:3000"
+      - "4200:4200"
     environment:
       - NODE_ENV=development
       - NEXT_PUBLIC_AUTH_API_URL=http://localhost:8080
