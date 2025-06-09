@@ -225,6 +225,10 @@ refreshenv
 #### WSL2 사용 (개발자 권장)
 
 ```bash
+# Windows 필수 기능 켜기
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+
 # WSL2 설치
 wsl --install
 
