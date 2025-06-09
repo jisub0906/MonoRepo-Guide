@@ -1,5 +1,5 @@
 # Spring Boot 백엔드 Dockerfile
-FROM openjdk:17-jdk-slim AS builder
+FROM eclipse-temurin:21-jdk-alpine AS builder
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ RUN chmod +x ./gradlew
 RUN ./gradlew bootJar --no-daemon
 
 # 실행 단계
-FROM openjdk:17-jre-slim
+FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 

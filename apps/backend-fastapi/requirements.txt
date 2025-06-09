@@ -10,5 +10,5 @@ python-dotenv==1.0.0
 alembic==1.13.0
 httpx==0.25.2
 pytest==7.4.3
-pytest-asyncio==0.21.1
+pytest-asyncio==0.21.1 
 flake8==6.1.0 

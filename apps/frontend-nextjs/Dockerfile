@@ -11,7 +11,6 @@ RUN npm install -g pnpm
 
 # 의존성 파일 복사 및 설치
 COPY package.json pnpm-lock.yaml* ./
-COPY apps/frontend-nextjs/package.json ./apps/frontend-nextjs/
 RUN pnpm install --frozen-lockfile
 
 # 빌드 단계
@@ -23,14 +22,12 @@ RUN npm install -g pnpm
 
 # 의존성 복사
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/frontend-nextjs/node_modules ./apps/frontend-nextjs/node_modules
 
 # 소스 코드 복사
 COPY . .
 
 # Next.js 빌드
-WORKDIR /app/apps/frontend-nextjs
-RUN pnpm build
+RUN pnpm nx build frontend-nextjs
 
 # 실행 단계
 FROM base AS runner
@@ -39,16 +36,27 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# 빌드 결과물 복사
-COPY --from=builder /app/apps/frontend-nextjs/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend-nextjs/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend-nextjs/.next/static ./.next/static
+# pnpm 설치
+RUN npm install -g pnpm
+
+# 필요한 파일들만 복사
+COPY --from=builder --chown=nextjs:nodejs /app/package.json ./
+COPY --from=builder --chown=nextjs:nodejs /app/pnpm-lock.yaml ./
+COPY --from=builder --chown=nextjs:nodejs /app/nx.json ./
+COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.base.json ./
+COPY --from=builder --chown=nextjs:nodejs /app/eslint.config.mjs ./
+COPY --from=builder --chown=nextjs:nodejs /app/jest.config.ts ./
+COPY --from=builder --chown=nextjs:nodejs /app/jest.preset.js ./
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend-nextjs ./apps/frontend-nextjs
 
 USER nextjs
 
 EXPOSE 3000
 
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
-CMD ["node", "server.js"] 
+WORKDIR /app
+
+CMD ["sh", "-c", "cd /app/apps/frontend-nextjs && ../../node_modules/.bin/next start"] 

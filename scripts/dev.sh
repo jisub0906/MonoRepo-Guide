@@ -20,6 +20,9 @@ check_command java
 check_command python3
 check_command pnpm
 
+# 현재 디렉토리 저장
+ROOT_DIR=$(pwd)
+
 # Docker Compose로 데이터베이스 시작
 echo "📦 PostgreSQL 데이터베이스를 시작합니다..."
 docker-compose up -d postgres-db
@@ -30,7 +33,7 @@ sleep 15
 
 # FastAPI 가상환경 확인 및 설정
 echo "🐍 FastAPI 가상환경을 확인합니다..."
-cd apps/backend-fastapi
+cd "$ROOT_DIR/apps/backend-fastapi"
 if [ ! -d "venv" ]; then
     echo "📦 FastAPI 가상환경을 생성합니다..."
     python3 -m venv venv
@@ -39,25 +42,31 @@ if [ ! -d "venv" ]; then
 else
     source venv/bin/activate
 fi
-cd ../../
+
+# 루트 디렉토리로 돌아가기
+cd "$ROOT_DIR"
 
 # 각 서비스를 백그라운드에서 실행
 echo "🌱 Spring Boot 백엔드 서비스를 시작합니다..."
-cd apps/backend-spring && ./gradlew bootRun &
+cd "$ROOT_DIR/apps/backend-spring"
+./gradlew bootRun &
 SPRING_PID=$!
 
 echo "🐍 FastAPI 백엔드 서비스를 시작합니다..."
-cd ../../apps/backend-fastapi && source venv/bin/activate && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload &
+cd "$ROOT_DIR/apps/backend-fastapi"
+source venv/bin/activate
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload &
 FASTAPI_PID=$!
 
 echo "⚛️ Next.js 프론트엔드를 시작합니다..."
-cd ../../ && pnpm nx serve frontend-nextjs &
+cd "$ROOT_DIR"
+pnpm nx serve frontend-nextjs &
 NEXTJS_PID=$!
 
 echo "✅ 모든 서비스가 시작되었습니다!"
 echo ""
 echo "🌐 서비스 접속 URL:"
-echo "  📱 Next.js 프론트엔드: http://localhost:3000"
+echo "  📱 Next.js 프론트엔드: http://localhost:4200"
 echo "  🌱 Spring Boot 백엔드: http://localhost:8080"
 echo "  🐍 FastAPI 백엔드: http://localhost:8000"
 echo "  📚 FastAPI 문서: http://localhost:8000/docs"
