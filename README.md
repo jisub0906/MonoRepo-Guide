@@ -236,6 +236,7 @@ wsl --install -d Ubuntu-22.04
 
 #### VScode Extensions
 
+```
 # [Java & Spring Boot]
 vscjava.vscode-java-pack
 vmware.vscode-spring-boot
@@ -251,6 +252,7 @@ nrwl.angular-console
 ms-azuretools.vscode-docker
 eamodio.gitlens
 VisualStudioExptTeam.vscodeintellicode
+```
 
 ### ✅ 설치 검증
 
