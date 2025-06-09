@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 데이터베이스
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: monorepo-postgres
+    environment:
+      POSTGRES_DB: authdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - monorepo-network
+
+  # Next.js 프론트엔드
+  frontend-nextjs:
+    build:
+      context: .
+      dockerfile: apps/frontend-nextjs/Dockerfile
+    container_name: monorepo-frontend-nextjs
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_AUTH_API_URL=http://localhost:8080
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - backend-spring
+      - backend-fastapi
+    networks:
+      - monorepo-network
+    volumes:
+      - ./apps/frontend-nextjs:/app
+      - /app/node_modules
+      - /app/.next
+
+  # Spring Boot 백엔드 서비스
+  backend-spring:
+    build:
+      context: .
+      dockerfile: apps/backend-spring/Dockerfile
+    container_name: monorepo-backend-spring
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/authdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    depends_on:
+      - postgres-db
+    networks:
+      - monorepo-network
+
+  # FastAPI 백엔드 서비스
+  backend-fastapi:
+    build:
+      context: .
+      dockerfile: apps/backend-fastapi/Dockerfile
+    container_name: monorepo-backend-fastapi
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+      - DATABASE_URL=postgresql://postgres:postgres@postgres-db:5432/authdb
+    depends_on:
+      - postgres-db
+    networks:
+      - monorepo-network
+    volumes:
+      - ./apps/backend-fastapi:/app
+
+volumes:
+  postgres_data:
+
+networks:
+  monorepo-network:
+    driver: bridge 

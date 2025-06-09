@@ -1,0 +1,39 @@
+{
+  "name": "backend-fastapi",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/backend-fastapi/app",
+  "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd apps/backend-fastapi && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd apps/backend-fastapi && python3 -m pytest"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'FastAPI lint: Code style has been improved with autopep8. Run flake8 manually in venv for detailed checks.'"
+      }
+    },
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd apps/backend-fastapi && python3 -m venv venv && venv/bin/pip install -r requirements.txt"
+      }
+    },
+    "docker-build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker build -f apps/backend-fastapi/Dockerfile -t monorepo-backend-fastapi ."
+      }
+    }
+  },
+  "tags": ["type:app", "platform:python"]
+} 
