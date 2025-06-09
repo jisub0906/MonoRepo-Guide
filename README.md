@@ -248,7 +248,8 @@ ms-python.black-formatter
 # [Next.js & Frontend]
 dbaeumer.vscode-eslint
 esbenp.prettier-vscode
-(선택) bradlc.vscode-tailwindcss
+bradlc.vscode-tailwindcss
+csstools.PostCSS-Language-Support
 
 # [Nx, Docker, Common]
 nrwl.angular-console
