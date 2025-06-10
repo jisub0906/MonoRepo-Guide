@@ -125,12 +125,34 @@ NEXTJS_PID=$!
 
 echo "✅ 모든 서비스가 시작되었습니다!"
 echo ""
-echo "🌐 서비스 접속 URL:"
-echo "  📱 Next.js 프론트엔드: http://localhost:4200"
-echo "  🌱 Spring Boot 백엔드: http://localhost:8080"
-echo "  🐍 FastAPI 백엔드: http://localhost:8000"
-echo "  📚 FastAPI 문서: http://localhost:8000/docs"
-echo "  📊 PostgreSQL 데이터베이스: localhost:5432"
+
+# WSL 환경 감지 및 IP 표시
+if grep -qi microsoft /proc/version 2>/dev/null; then
+    WSL_IP=$(hostname -I | awk '{print $1}')
+    echo "🔍 WSL 환경이 감지되었습니다!"
+    echo ""
+    echo "🌐 서비스 접속 URL (WSL 사용자용):"
+    echo "  📱 Next.js 프론트엔드: http://$WSL_IP:4200 ⭐ (WSL에서는 이 URL 사용)"
+    echo "  🌱 Spring Boot 백엔드: http://$WSL_IP:8080"
+    echo "  🐍 FastAPI 백엔드: http://$WSL_IP:8000"
+    echo "  📚 FastAPI 문서: http://$WSL_IP:8000/docs"
+    echo ""
+    echo "💡 WSL 환경에서는 localhost 대신 WSL IP($WSL_IP)를 사용하세요!"
+    echo ""
+    echo "🌐 일반 접속 URL (참고용):"
+    echo "  📱 Next.js 프론트엔드: http://localhost:4200"
+    echo "  🌱 Spring Boot 백엔드: http://localhost:8080"
+    echo "  🐍 FastAPI 백엔드: http://localhost:8000"
+    echo "  📚 FastAPI 문서: http://localhost:8000/docs"
+    echo "  📊 PostgreSQL 데이터베이스: localhost:5432"
+else
+    echo "🌐 서비스 접속 URL:"
+    echo "  📱 Next.js 프론트엔드: http://localhost:4200"
+    echo "  🌱 Spring Boot 백엔드: http://localhost:8080"
+    echo "  🐍 FastAPI 백엔드: http://localhost:8000"
+    echo "  📚 FastAPI 문서: http://localhost:8000/docs"
+    echo "  📊 PostgreSQL 데이터베이스: localhost:5432"
+fi
 echo ""
 echo "종료하려면 Ctrl+C를 누르세요..."
 

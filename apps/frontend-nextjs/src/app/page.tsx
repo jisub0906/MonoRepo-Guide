@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getApiUrl, apiRequest } from '../lib/api';
 
 interface ServiceStatus {
   name: string;
@@ -32,10 +33,12 @@ export default function Dashboard() {
   // 서비스 상태 확인
   useEffect(() => {
     const checkServices = async () => {
+      const { springBootUrl, fastApiUrl } = getApiUrl();
+      
       const serviceUrls = [
         { name: 'Next.js 프론트엔드', url: '/', status: 'loading' as const },
-        { name: 'Spring Boot 백엔드', url: 'http://localhost:8080/api/auth/health', status: 'loading' as const },
-        { name: 'FastAPI 백엔드', url: 'http://localhost:8000/health', status: 'loading' as const },
+        { name: 'Spring Boot 백엔드', url: `${springBootUrl}/api/auth/health`, status: 'loading' as const },
+        { name: 'FastAPI 백엔드', url: `${fastApiUrl}/health`, status: 'loading' as const },
       ];
 
       const updatedServices = await Promise.all(
@@ -85,9 +88,8 @@ export default function Dashboard() {
   // 인증 테스트
   const testAuth = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/auth/login', {
+      const response = await apiRequest('/api/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: 'admin', password: 'password' }),
       });
       const data = await response.json();
