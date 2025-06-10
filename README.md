@@ -212,6 +212,9 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 # 필수 도구 설치
 choco install nodejs-lts -y; choco install openjdk --version=21.0.2 -y; choco install python --version=3.12 -y; choco install docker-desktop -y
 
+# 주의사항
+필수 도구 설치 진행후 무조건 컴퓨터 재부팅 후 진행
+
 # 실행 정책 변경
 Set-ExecutionPolicy RemoteSigned
 
