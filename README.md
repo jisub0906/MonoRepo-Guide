@@ -167,6 +167,9 @@ brew install --cask docker
 ### 🐧 Linux (Ubuntu/Debian) 설치 가이드
 
 ```bash
+# 윈도우 환경이면 Ubuntu 22.04로 진행해주세요
+wsl --set-default Ubuntu 22.04
+
 # 시스템 업데이트
 sudo apt update && sudo apt upgrade -y
 
