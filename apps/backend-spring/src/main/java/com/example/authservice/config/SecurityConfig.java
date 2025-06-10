@@ -46,13 +46,27 @@ public class SecurityConfig {
             "http://0.0.0.0:4200"
         ));
         
-        // 모든 패턴도 허용 (개발 환경용)
+        // 모든 패턴도 허용 (개발 환경용) - WSL 동적 IP 지원
         configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        // 모든 HTTP 메서드 허용
+        configuration.setAllowedMethods(Arrays.asList("*"));
+        
+        // 모든 헤더 허용
         configuration.setAllowedHeaders(Arrays.asList("*"));
+        
+        // 자격 증명 허용
         configuration.setAllowCredentials(true);
-        configuration.setMaxAge(3600L); // 1시간 캐시
+        
+        // CORS preflight 캐시 시간 설정
+        configuration.setMaxAge(3600L);
+        
+        // 노출할 헤더 설정 (WSL 환경에서 필요할 수 있음)
+        configuration.setExposedHeaders(Arrays.asList(
+            "Access-Control-Allow-Origin",
+            "Access-Control-Allow-Credentials",
+            "Authorization"
+        ));
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

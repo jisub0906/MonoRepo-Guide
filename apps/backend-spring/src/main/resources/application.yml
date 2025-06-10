@@ -1,5 +1,7 @@
 server:
   port: 8080
+  # WSL 환경 지원을 위해 모든 인터페이스에서 바인딩
+  address: 0.0.0.0
 
 spring:
   application:
