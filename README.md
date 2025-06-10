@@ -168,13 +168,16 @@ brew install --cask docker
 
 ```bash
 # 윈도우 환경이면 Ubuntu 22.04로 진행해주세요
-wsl --set-default Ubuntu 22.04
+wsl --set-default Ubuntu-22.04
 
 # wsl 실행
 wsl
 
 # 시스템 업데이트
 sudo apt update && sudo apt upgrade -y
+
+# 설치 폴더 만들기
+sudo add-apt-repository ppa:deadsnakes/ppa
 
 # Node.js 20 설치
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
