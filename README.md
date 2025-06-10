@@ -61,6 +61,9 @@
 - 📊 **통합 대시보드**: 모든 서비스 상태를 한눈에 확인
 - 🔐 **인증 시스템**: Spring Security 기반 JWT 인증
 - 📦 **API 문서화**: FastAPI 자동 문서 생성
+- 🔥 **WSL 완벽 지원**: Windows WSL 환경에서 CORS 문제 자동 해결
+- 🎯 **포트 충돌 자동 해결**: 개발 환경 시작 시 포트 충돌 자동 감지 및 해결
+- 🌐 **크로스 플랫폼**: Linux, macOS, Windows, WSL 모든 환경 지원
 
 ## ⚡ 빠른 시작
 
@@ -107,6 +110,7 @@ pnpm kill-ports              # 기본 포트들 (5432, 8080, 8000, 4200) 자동 
 
 # 🔥 WSL 환경에서 CORS 문제 해결 (WSL 사용자만)
 pnpm wsl-fix                 # WSL 네트워크 설정 자동 수정
+pnpm wsl-debug               # WSL CORS 문제 진단 및 해결 가이드
 
 # 🚀 개발 환경 시작
 pnpm dev                     # 대화형 모드 (포트 충돌 시 사용자 확인)
@@ -116,14 +120,23 @@ pnpm dev:auto                # 자동 종료 모드 (포트 충돌 시 자동 �
 
 > 💡 **포트 충돌 해결**: 기존에 실행 중인 서비스가 있어 포트 충돌이 발생하면, `pnpm kill-ports` 명령어로 자동으로 해결할 수 있습니다.
 
-> 🔥 **WSL 사용자 주의**: WSL 환경에서 CORS 문제가 발생하면 `pnpm wsl-fix` 명령어를 실행하여 네트워크 설정을 자동으로 수정하세요.
+> 🔥 **WSL 사용자 주의**: WSL 환경에서 CORS 문제가 발생하면 `pnpm wsl-fix` 명령어를 실행하여 네트워크 설정을 자동으로 수정하세요. 문제가 지속되면 `pnpm wsl-debug`로 상세 진단을 받을 수 있습니다.
 
 ### 5️⃣ 브라우저에서 확인
 
+#### 일반 환경 (Linux/macOS/Windows)
 - 🌐 **Frontend Dashboard**: http://localhost:4200
 - 🌱 **Spring Boot API**: http://localhost:8080/api/auth/health
 - 🐍 **FastAPI Docs**: http://localhost:8000/docs
 - 📊 **FastAPI Health**: http://localhost:8000/health
+
+#### WSL 환경 (Windows)
+WSL 환경에서는 `localhost` 대신 **WSL IP 주소**를 사용해야 합니다:
+- 🌐 **Frontend Dashboard**: http://[WSL_IP]:4200 (예: http://192.168.132.13:4200)
+- 🌱 **Spring Boot API**: http://[WSL_IP]:4200에서 백엔드 API 호출
+- 🐍 **FastAPI Docs**: http://localhost:8000/docs (WSL 내부에서 접근)
+
+> 💡 **WSL 브라우저 URL 자동 표시**: `pnpm dev:auto` 실행 시 터미널에 `🌐 브라우저 접속 URL: http://[WSL_IP]:4200` 형태로 자동 표시됩니다. 이 URL을 복사하여 브라우저에서 접속하세요.
 
 ---
 
@@ -354,9 +367,12 @@ MonoRepo-Guide/
 │       └── 📄 Dockerfile            # Docker 이미지 빌드
 │
 ├── 📁 scripts/                       # 자동화 스크립트
-│   ├── 📄 dev.sh                    # 개발 환경 시작
+│   ├── 📄 dev.sh                    # 개발 환경 시작 (WSL 환경 자동 감지)
 │   ├── 📄 build.sh                  # 프로덕션 빌드
-│   └── 📄 verify.sh                 # 환경 검증
+│   ├── 📄 verify.sh                 # 환경 검증
+│   ├── 📄 kill-ports.sh             # 포트 충돌 해결
+│   ├── 📄 wsl-network-fix.sh        # WSL 네트워크 설정 자동 수정
+│   └── 📄 wsl-cors-debug.sh         # WSL CORS 문제 진단 및 해결
 │
 ├── 📄 docker-compose.yml             # Docker 서비스 오케스트레이션
 ├── 📄 nx.json                       # Nx 워크스페이스 설정
@@ -389,7 +405,15 @@ MonoRepo-Guide/
 #### Backend (FastAPI)
 - **app/main.py**: FastAPI 메인 애플리케이션
 - **requirements.txt**: Python 의존성 목록
-- **app/config.py**: 환경 설정 관리
+- **app/config.py**: 환경 설정 관리 (WSL 환경 자동 감지 포함)
+
+#### Scripts (자동화 스크립트)
+- **dev.sh**: 개발 환경 통합 시작 스크립트 (WSL 환경 자동 감지)
+- **kill-ports.sh**: 포트 충돌 자동 해결 스크립트
+- **wsl-network-fix.sh**: WSL 네트워크 설정 자동 수정
+- **wsl-cors-debug.sh**: WSL CORS 문제 진단 및 해결 가이드
+- **verify.sh**: 개발 환경 검증 스크립트
+- **build.sh**: 프로덕션 빌드 스크립트
 
 ---
 
@@ -494,9 +518,27 @@ pnpm kill-ports
 pnpm dev:auto
 ```
 
+#### 🔥 WSL 환경 관리
+```bash
+# WSL 네트워크 설정 자동 수정
+pnpm wsl-fix
+
+# WSL CORS 문제 진단 및 해결 가이드
+pnpm wsl-debug
+
+# WSL IP 주소 확인 및 브라우저 URL 표시
+WSL_IP=$(hostname -I | awk '{print $1}')
+echo "🌐 브라우저 접속 URL: http://$WSL_IP:4200"
+
+# WSL 환경에서 개발 서버 시작 (자동 IP 감지 및 URL 표시)
+pnpm dev:auto
+```
+
 #### 🛠️ 개발 환경 관리
 ```bash
 # 환경 검증
+pnpm verify
+# 또는
 ./scripts/verify.sh
 
 # 모든 서비스 중지
@@ -513,6 +555,15 @@ pnpm update
 
 # Nx 그래프 시각화
 pnpm nx graph
+
+# Docker 관련 명령어
+pnpm docker:build    # Docker 이미지 빌드
+pnpm docker:up       # Docker 컨테이너 시작
+pnpm docker:down     # Docker 컨테이너 중지
+
+# 데이터베이스 관련 명령어
+pnpm db:up          # PostgreSQL만 시작
+pnpm db:down        # PostgreSQL 중지
 ```
 
 ### 🎯 개발 팁
@@ -764,42 +815,54 @@ WSL(Windows Subsystem for Linux) 환경에서는 네트워크 설정으로 인�
 # WSL 네트워크 문제 자동 해결
 pnpm wsl-fix
 
+# WSL CORS 문제 진단 및 해결 가이드
+pnpm wsl-debug
+
 # 또는 직접 실행
-chmod +x scripts/wsl-network-fix.sh
+chmod +x scripts/wsl-network-fix.sh scripts/wsl-cors-debug.sh
 ./scripts/wsl-network-fix.sh
+./scripts/wsl-cors-debug.sh
 ```
 
-**🔍 수동 해결**
+**🔍 WSL 환경에서의 올바른 접속 방법**
 ```bash
-# 1. WSL IP 주소 확인
-hostname -I
+# 1. WSL IP 주소 확인 및 브라우저 URL 표시
+WSL_IP=$(hostname -I | awk '{print $1}')
+echo "🌐 브라우저 접속 URL: http://$WSL_IP:4200"
 
-# 2. Windows 호스트 IP 확인
+# 2. 브라우저에서 WSL IP로 접속 (localhost 대신)
+# ✅ 올바른 접속: http://192.168.132.13:4200
+# ❌ 잘못된 접속: http://localhost:4200
+
+# 3. 개발 서버 시작 시 WSL IP 자동 표시
+pnpm dev:auto  # WSL 환경 자동 감지 및 브라우저 URL 표시
+```
+
+**🔧 백엔드 CORS 설정 (자동 적용됨)**
+
+이 프로젝트는 WSL 환경을 자동으로 감지하여 CORS 설정을 동적으로 구성합니다:
+
+- **Spring Boot**: 모든 네트워크 인터페이스 IP를 자동 감지하여 CORS 허용
+- **FastAPI**: WSL IP를 포함한 동적 CORS origins 설정
+- **Next.js**: 현재 호스트를 자동 감지하여 적절한 API URL 사용
+
+**🔍 수동 해결 (고급 사용자)**
+```bash
+# 1. Windows 호스트 IP 확인
 cat /etc/resolv.conf | grep nameserver
 
-# 3. Windows PowerShell에서 방화벽 규칙 추가 (관리자 권한)
-New-NetFirewallRule -DisplayName "WSL Port 3000" -Direction Inbound -LocalPort 3000 -Protocol TCP -Action Allow
+# 2. Windows PowerShell에서 방화벽 규칙 추가 (관리자 권한)
 New-NetFirewallRule -DisplayName "WSL Port 4200" -Direction Inbound -LocalPort 4200 -Protocol TCP -Action Allow
 New-NetFirewallRule -DisplayName "WSL Port 8000" -Direction Inbound -LocalPort 8000 -Protocol TCP -Action Allow
 New-NetFirewallRule -DisplayName "WSL Port 8080" -Direction Inbound -LocalPort 8080 -Protocol TCP -Action Allow
 New-NetFirewallRule -DisplayName "WSL Port 5432" -Direction Inbound -LocalPort 5432 -Protocol TCP -Action Allow
 
-# 4. WSL 재시작
+# 3. WSL 재시작
 wsl --shutdown
 wsl
 ```
 
-**🔧 추가 설정**
-```bash
-# .env 파일에 WSL IP 추가
-echo "EXTRA_CORS_ORIGINS=http://$(hostname -I | awk '{print $1}'):3000,http://$(hostname -I | awk '{print $1}'):4200" >> .env
-
-# 서비스를 0.0.0.0으로 바인딩 (필요시)
-# FastAPI: uvicorn app.main:app --host 0.0.0.0 --port 8000
-# Spring Boot: server.address=0.0.0.0 (application.yml)
-```
-
-**💡 WSL 환경 확인**
+**💡 WSL 환경 확인 및 테스트**
 ```bash
 # WSL 버전 확인
 wsl --version
@@ -807,10 +870,24 @@ wsl --version
 # WSL 환경인지 확인
 grep -i microsoft /proc/version
 
+# CORS 헤더 테스트
+WSL_IP=$(hostname -I | awk '{print $1}')
+curl -H "Origin: http://$WSL_IP:4200" -v http://localhost:8080/api/auth/health
+curl -H "Origin: http://$WSL_IP:4200" -v http://localhost:8000/health
+
 # 네트워크 연결 테스트
 curl -I http://localhost:8080/api/auth/health
 curl -I http://localhost:8000/health
 ```
+
+**🚀 WSL 환경 개발 워크플로우**
+1. `pnpm dev:auto` 실행
+2. 터미널에 자동으로 표시되는 브라우저 접속 URL 확인
+   ```
+   🌐 브라우저 접속 URL: http://192.168.132.13:4200
+   ```
+3. 표시된 URL을 복사하여 브라우저에서 접속
+4. 모든 백엔드 API가 자동으로 CORS 설정되어 정상 작동
 
 ### 🔍 디버깅 도구
 
