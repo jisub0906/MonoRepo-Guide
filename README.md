@@ -180,6 +180,9 @@ sudo apt install -y openjdk-21-jdk
 # Python 3.12 설치
 sudo apt install -y python3.12 python3.12-venv python3.12-pip
 
+# 주의사항
+상단의 Python 3.12 설치까지 진행후 무조건 컴퓨터 재부팅 후 진행
+
 # pnpm 설치
 sudo npm install -g pnpm
 
