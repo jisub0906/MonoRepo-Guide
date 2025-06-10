@@ -186,7 +186,7 @@ sudo apt-get install -y nodejs
 # Java 21 설치
 sudo apt install -y openjdk-21-jdk
 
-# Python 3.12 설치
+# Python 3.10 설치
 sudo apt install -y python3.12 python3.12-venv python3.12-pip
 
 # 주의사항
@@ -277,7 +277,7 @@ ms-python.black-formatter
 dbaeumer.vscode-eslint
 esbenp.prettier-vscode
 bradlc.vscode-tailwindcss
-csstools.PostCSS-Language-Support
+csstools.PostCSS
 
 # [Nx, Docker, Common]
 nrwl.angular-console
