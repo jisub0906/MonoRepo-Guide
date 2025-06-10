@@ -19,14 +19,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            // CORS를 가장 먼저 처리
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/api/auth/health").permitAll()
-                .requestMatchers("/api/auth/login").permitAll()
-                .requestMatchers("/api/auth/register").permitAll()
+                // 헬스체크 및 인증 관련 엔드포인트는 모두 허용
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/actuator/health").permitAll()
+                .requestMatchers("/health").permitAll()
+                // OPTIONS 요청 (CORS preflight) 허용
+                .requestMatchers("OPTIONS", "/**").permitAll()
                 .anyRequest().authenticated()
+            )
+            // 예외 처리 시에도 CORS 헤더 포함
+            .exceptionHandling(exceptions -> exceptions
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+                    response.setHeader("Access-Control-Allow-Credentials", "true");
+                    response.setStatus(401);
+                    response.getWriter().write("{\"error\":\"Unauthorized\",\"message\":\"" + authException.getMessage() + "\"}");
+                })
             );
 
         return http.build();
