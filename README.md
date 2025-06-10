@@ -284,7 +284,6 @@ csstools.PostCSS
 nrwl.angular-console
 ms-azuretools.vscode-docker
 eamodio.gitlens
-VisualStudioExptTeam.vscodeintellicode
 
 # [Test]
 firsttris.Jest-Runner
