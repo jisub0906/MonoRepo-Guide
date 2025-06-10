@@ -105,6 +105,9 @@ chmod +x apps/backend-spring/gradlew
 pnpm kill-ports              # 기본 포트들 (5432, 8080, 8000, 4200) 자동 종료
 # 또는 특정 포트만: ./scripts/kill-ports.sh 4200 5432
 
+# 🔥 WSL 환경에서 CORS 문제 해결 (WSL 사용자만)
+pnpm wsl-fix                 # WSL 네트워크 설정 자동 수정
+
 # 🚀 개발 환경 시작
 pnpm dev                     # 대화형 모드 (포트 충돌 시 사용자 확인)
 # 또는
@@ -112,6 +115,8 @@ pnpm dev:auto                # 자동 종료 모드 (포트 충돌 시 자동 �
 ```
 
 > 💡 **포트 충돌 해결**: 기존에 실행 중인 서비스가 있어 포트 충돌이 발생하면, `pnpm kill-ports` 명령어로 자동으로 해결할 수 있습니다.
+
+> 🔥 **WSL 사용자 주의**: WSL 환경에서 CORS 문제가 발생하면 `pnpm wsl-fix` 명령어를 실행하여 네트워크 설정을 자동으로 수정하세요.
 
 ### 5️⃣ 브라우저에서 확인
 
@@ -748,6 +753,63 @@ python3 -m venv venv
 
 # 가상환경 활성화 확인
 which python  # 가상환경 경로가 표시되어야 함
+```
+
+#### 7. WSL 환경에서 CORS 문제 🔥
+
+WSL(Windows Subsystem for Linux) 환경에서는 네트워크 설정으로 인해 CORS 문제가 발생할 수 있습니다.
+
+**🎯 자동 해결 (권장)**
+```bash
+# WSL 네트워크 문제 자동 해결
+pnpm wsl-fix
+
+# 또는 직접 실행
+chmod +x scripts/wsl-network-fix.sh
+./scripts/wsl-network-fix.sh
+```
+
+**🔍 수동 해결**
+```bash
+# 1. WSL IP 주소 확인
+hostname -I
+
+# 2. Windows 호스트 IP 확인
+cat /etc/resolv.conf | grep nameserver
+
+# 3. Windows PowerShell에서 방화벽 규칙 추가 (관리자 권한)
+New-NetFirewallRule -DisplayName "WSL Port 3000" -Direction Inbound -LocalPort 3000 -Protocol TCP -Action Allow
+New-NetFirewallRule -DisplayName "WSL Port 4200" -Direction Inbound -LocalPort 4200 -Protocol TCP -Action Allow
+New-NetFirewallRule -DisplayName "WSL Port 8000" -Direction Inbound -LocalPort 8000 -Protocol TCP -Action Allow
+New-NetFirewallRule -DisplayName "WSL Port 8080" -Direction Inbound -LocalPort 8080 -Protocol TCP -Action Allow
+New-NetFirewallRule -DisplayName "WSL Port 5432" -Direction Inbound -LocalPort 5432 -Protocol TCP -Action Allow
+
+# 4. WSL 재시작
+wsl --shutdown
+wsl
+```
+
+**🔧 추가 설정**
+```bash
+# .env 파일에 WSL IP 추가
+echo "EXTRA_CORS_ORIGINS=http://$(hostname -I | awk '{print $1}'):3000,http://$(hostname -I | awk '{print $1}'):4200" >> .env
+
+# 서비스를 0.0.0.0으로 바인딩 (필요시)
+# FastAPI: uvicorn app.main:app --host 0.0.0.0 --port 8000
+# Spring Boot: server.address=0.0.0.0 (application.yml)
+```
+
+**💡 WSL 환경 확인**
+```bash
+# WSL 버전 확인
+wsl --version
+
+# WSL 환경인지 확인
+grep -i microsoft /proc/version
+
+# 네트워크 연결 테스트
+curl -I http://localhost:8080/api/auth/health
+curl -I http://localhost:8000/health
 ```
 
 ### 🔍 디버깅 도구

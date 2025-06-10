@@ -8,6 +8,7 @@
     "kill-ports": "./scripts/kill-ports.sh",
     "build": "./scripts/build.sh",
     "verify": "./scripts/verify.sh",
+    "wsl-fix": "./scripts/wsl-network-fix.sh",
     "start": "docker-compose up -d",
     "stop": "docker-compose down",
     "logs": "docker-compose logs -f",
