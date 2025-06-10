@@ -246,7 +246,8 @@ wsl --install
 # Ubuntu 22.04 설치
 wsl --install -d Ubuntu-22.04
 
-# WSL2에서 Linux 설치 가이드 따라하기
+# WSL2에서 상단의 Linux 설치 가이드 따라하기
+wsl
 ```
 
 #### VScode Extensions
