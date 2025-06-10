@@ -178,6 +178,7 @@ sudo apt update && sudo apt upgrade -y
 
 # 설치 폴더 만들기
 sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
 
 # Node.js 20 설치
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
@@ -186,8 +187,8 @@ sudo apt-get install -y nodejs
 # Java 21 설치
 sudo apt install -y openjdk-21-jdk
 
-# Python 3.10 설치
-sudo apt install -y python3.12 python3.12-venv python3.12-pip
+# Python 3.12 설치
+sudo apt install -y python3.12 python3.12-venv python3-pip
 
 # 주의사항
 상단의 Python 3.12 설치까지 진행후 무조건 컴퓨터 재부팅 후 진행
